@@ -1,0 +1,150 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="author" content="Morpheus">
+    <meta name="copyright" content="Morpheus">
+    <meta name="keywords" content="Morpheus,text on swipe">
+    <meta name="description" content="paint app">
+    <meta charset="utf-8">
+    <title>Merry Christmass and a Happy New Year 2019</title>
+    <style media="screen">
+      body{
+        background: radial-gradient(#3a3a3a, black);
+        margin:0;
+        padding: 0;
+        position: relative;
+      }
+      .swipeText{
+        background: transparent;
+        border: none;
+        color: yellow;
+        display: inline-block;
+        font-size: 14px;
+        left: calc(100vw/2);
+        position: absolute;
+        text-shadow: 0 0 10px white;
+        top: calc(100vh/2);
+        z-index: 5;
+
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+        window.onload = function() {
+            
+            textOnSwipe("Wishing you a Merry Christmas and a very prosperous 2019");
+            
+        };
+
+
+
+        function textOnSwipe(text) {
+            var canvas = document.createElement('CANVAS');
+            document.body.appendChild(canvas);
+            document.body.style.position = "relative";
+            document.body.style.padding = "0";
+            document.body.style.margin = "0";
+            canvas.style.background = "radial-gradient(#3a3a3a, black)";
+            canvas.style.position = "absolute";
+            canvas.style.zIndex = "1";
+            canvas.style.top = "0";
+            canvas.style.left = "0";
+            const cx = canvas.getContext('2d');
+            const W = innerWidth;
+            const H = innerHeight;
+            const STEP = 3;
+            const fontSize = 14;
+            var counter = 0;
+            canvas.width = W;
+            canvas.height = H;
+
+            var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+            var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+            var myFrames;
+
+            const controller = {
+                x: 0,
+                y: 0
+            };
+
+            canvas.addEventListener("touchstart", handleStart, false);
+            canvas.addEventListener("touchend", handleEnd, false);
+            canvas.addEventListener("touchcancel", handleCancel, false);
+            canvas.addEventListener("touchmove", handleMove, false);
+
+            //make text charachters spans and set their style
+            var charArray = text.split("");
+            //console.log(charArray);
+
+            for (var i = 0; i < charArray.length; i++) {
+              var span = document.createElement("SPAN");
+              span.setAttribute('class', 'swipeText');
+              var text = document.createTextNode(charArray[i]);
+              span.appendChild(text);
+              document.body.appendChild(span);
+              span.style.left = "" + Math.round(Math.random() * W) + "px";
+              span.style.top = "" + Math.round(Math.random() * H) + "px";
+            }
+
+            function handleStart(evt) {
+                evt.preventDefault();
+                controller.x = evt.changedTouches[0].pageX;
+                controller.y = evt.changedTouches[0].pageY;
+
+                for (var i = 0; i < charArray.length; i++) {
+                  draw(
+                    document.getElementsByTagName('SPAN')[i],
+                    Math.round(i*fontSize % W),
+                    Math.floor((i*fontSize) / W) * fontSize
+                  );
+                }
+            }
+
+            function handleEnd(evt) {
+                evt.preventDefault();
+                controller.x = 0;
+                controller.y = 0;
+                counter = 0;
+            }
+
+            function handleCancel(evt) {
+                evt.preventDefault();
+                counter = 0;
+            }
+
+            function handleMove(evt) {
+                evt.preventDefault();
+                controller.x = evt.changedTouches[0].pageX;
+                controller.y = evt.changedTouches[0].pageY;
+
+                if(counter % STEP === 0){
+                  draw(
+                    document.getElementsByTagName('SPAN')[(counter/STEP) % charArray.length],
+                    controller.x,
+                    controller.y
+                  );
+                  counter += 1;
+                }else {
+                  counter += 1;
+                }
+            }
+
+            function draw(element, x, y){
+                element.style.left = "" + x + "px";
+                element.style.top = "" + y + "px";
+            }
+          }
+
+
+    </script>
+  </body>
+</html>
+
+
+
